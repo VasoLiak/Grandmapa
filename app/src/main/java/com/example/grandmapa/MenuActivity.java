@@ -1,8 +1,6 @@
 package com.example.grandmapa;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MenuActivity extends AppCompatActivity {
+    private static final String BIRIBA_PACKAGE_NAME = "air.com.lazyland.biriba"; //mporei na prepei na fygei to air.
+    private static final String SOLITAIRE_PACKAGE_NAME = "com.karmangames.solitaire";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,45 +32,75 @@ public class MenuActivity extends AppCompatActivity {
         ImageView radioImageView = findViewById(R.id.radio);
         ImageView pasietzaImageView = findViewById(R.id.pasietza);
         ImageView mpirimpaImageView = findViewById(R.id.mpirimpa);
+        ImageView cameraImageView = findViewById(R.id.camera);
+        ImageView photosImageView = findViewById(R.id.photos);
 
         radioImageView.setOnClickListener(v -> launchRadioApp());
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create Intent to start the second activity
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        pasietzaImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchGame(SOLITAIRE_PACKAGE_NAME);
+            }
+        });
+
+        mpirimpaImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchGame(BIRIBA_PACKAGE_NAME);
+            }
+        });
+
+        cameraImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MenuActivity.this, CameraActivity.class);
                 startActivity(intent);
             }
         });
     }
 
-        private void launchRadioApp() {
-            String[] radioPackages = {
-                    "com.sec.android.app.fm",
-                    "com.htc.fmradio",
-                    "com.sonyericsson.fmradio",
-                    "com.motorola.fmradio",
-                    "com.caf.fmradio",
-                    "com.miui.fm",
-                    "com.huawei.android.FMRadio",
-                    "com.realme.fmradio"
-            };
+    private void launchRadioApp() {
+        String[] radioPackages = {
+                "com.sec.android.app.fm",
+                "com.htc.fmradio",
+                "com.sonyericsson.fmradio",
+                "com.motorola.fmradio",
+                "com.caf.fmradio",
+                "com.miui.fm",
+                "com.huawei.android.FMRadio",
+                "com.realme.fmradio"
+        };
 
-            boolean appFound = false;
-            for (String packageName : radioPackages) {
-                Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-                if (intent != null) {
-                    startActivity(intent);
-                    appFound = true;
-                    break;
-                }
-            }
-
-            if (!appFound) {
-                // Prompt to install a radio app
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nextradioapp.nextradio"));
+        boolean appFound = false;
+        for (String packageName : radioPackages) {
+            Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+            if (intent != null) {
                 startActivity(intent);
+                appFound = true;
+                break;
             }
         }
 
+        if (!appFound) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nextradioapp.nextradio"));
+            startActivity(intent);
+        }
+    }
+
+    private void launchGame(String packageName) {
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+        if (launchIntent != null) {
+            startActivity(launchIntent);
+        } else {
+            Toast.makeText(this, "App is not installed.", Toast.LENGTH_LONG).show();
+        }
+    }
 }
