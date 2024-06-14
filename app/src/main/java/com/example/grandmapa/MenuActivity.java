@@ -65,6 +65,14 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        photosImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MenuActivity.this, PhotosActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void launchRadioApp() {

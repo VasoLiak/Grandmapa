@@ -28,11 +28,6 @@ public class MainActivity extends AppCompatActivity {
         ImageView menuImageView = findViewById(R.id.Menu);
         ImageView catalogueImageView = findViewById(R.id.Catalogue);
 
-        ImageView backImageView = findViewById(R.id.back);
-        ImageView radioImageView = findViewById(R.id.radio);
-        ImageView pasietzaImageView = findViewById(R.id.pasietza);
-        ImageView mpirimpaImageView = findViewById(R.id.mpirimpa);
-
         String currentDate = getCurrentDate();
         String currentTime = getCurrentTime();
 
