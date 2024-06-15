@@ -5,6 +5,162 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PhoneActivity">
+    tools:context=".PhoneActivity"
+    android:background="@color/background_color">
+
+    <TextView
+        android:id="@+id/phone_number_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/white"
+        android:gravity="center"
+        android:text="Εισάγετε έναν αριθμό"
+        android:fontFamily="@font/jura"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="43dp"
+        android:layout_height="41dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/call"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/back" />
+
+    <GridLayout
+        android:layout_width="378dp"
+        android:layout_height="502dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="64dp"
+        android:columnCount="3"
+        android:orientation="horizontal"
+        android:rowCount="4"
+        app:layout_constraintBottom_toTopOf="@+id/call"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.484"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/phone_number_display">
+
+        <ImageView
+            android:id="@+id/one"
+            android:layout_width="130dp"
+            android:layout_height="119dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:tag="1"
+            app:srcCompat="@drawable/number1" />
+
+        <ImageView
+            android:id="@+id/two"
+            android:layout_width="128dp"
+            android:layout_height="118dp"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:tag="2"
+            app:srcCompat="@drawable/number2" />
+
+        <ImageView
+            android:id="@+id/three"
+            android:layout_width="118dp"
+            android:layout_height="121dp"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:tag="3"
+            app:srcCompat="@drawable/number3" />
+
+        <ImageView
+            android:id="@+id/four"
+            android:layout_width="130dp"
+            android:layout_height="123dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:tag="4"
+            app:srcCompat="@drawable/number4" />
+
+        <ImageView
+            android:id="@+id/five"
+            android:layout_width="125dp"
+            android:layout_height="124dp"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:tag="5"
+            app:srcCompat="@drawable/number5" />
+
+        <ImageView
+            android:id="@+id/six"
+            android:layout_width="114dp"
+            android:layout_height="123dp"
+            android:layout_row="1"
+            android:layout_column="2"
+            android:tag="6"
+            app:srcCompat="@drawable/number6" />
+
+        <ImageView
+            android:id="@+id/seven"
+            android:layout_width="132dp"
+            android:layout_height="125dp"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:tag="7"
+            app:srcCompat="@drawable/number7" />
+
+        <ImageView
+            android:id="@+id/eight"
+            android:layout_width="128dp"
+            android:layout_height="125dp"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:tag="8"
+            app:srcCompat="@drawable/number8" />
+
+        <ImageView
+            android:id="@+id/nine"
+            android:layout_width="116dp"
+            android:layout_height="123dp"
+            android:layout_row="2"
+            android:layout_column="2"
+            android:tag="9"
+            app:srcCompat="@drawable/number9" />
+
+        <ImageView
+            android:id="@+id/zero"
+            android:layout_width="128dp"
+            android:layout_height="132dp"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:tag="0"
+            app:srcCompat="@drawable/number0" />
+
+    </GridLayout>
+
+    <ImageView
+        android:id="@+id/call"
+        android:layout_width="137dp"
+        android:layout_height="104dp"
+        android:layout_marginBottom="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/call" />
+
+    <ImageView
+        android:id="@+id/erase"
+        android:layout_width="67dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="52dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintStart_toEndOf="@+id/call"
+        app:srcCompat="@drawable/erase" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

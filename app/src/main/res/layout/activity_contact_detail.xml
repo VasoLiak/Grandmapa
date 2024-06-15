@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
+
+    <TextView
+        android:id="@+id/TextView"
+        android:layout_width="241dp"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/jura"
+        android:padding="16dp"
+        android:text="Επιλογές Επαφής"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="43dp"
+        android:layout_height="41dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.046"
+        app:srcCompat="@drawable/back" />
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/jura"
+        android:padding="8dp"
+        android:text="Όνομα"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TextView"
+        app:layout_constraintVertical_bias="0.055"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/contact_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/jura"
+        android:padding="8dp"
+        android:text="Αριθμός τηλεφώνου"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/contact_name"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/select_sos_contact"
+        android:layout_width="308dp"
+        android:layout_height="57dp"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/jura"
+        android:onClick="onSelectSOSContactClicked"
+        android:text="Χρησιμοποίησε το αστέρι για να αποθηκεύσεις την επαφή ως ΕΚΤΑΚΤΗΣ ΑΝΑΓΚΗΣ"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/star_image"
+        android:layout_width="80dp"
+        android:layout_height="86dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="324dp"
+        android:clickable="true"
+        android:padding="8dp"
+        android:src="@drawable/emptystar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/call"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="84dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="324dp"
+        app:layout_constraintEnd_toStartOf="@+id/call"
+        app:layout_constraintHorizontal_bias="0.542"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bin" />
+
+    <ImageView
+        android:id="@+id/call"
+        android:layout_width="124dp"
+        android:layout_height="94dp"
+        android:layout_marginTop="316dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/call" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
