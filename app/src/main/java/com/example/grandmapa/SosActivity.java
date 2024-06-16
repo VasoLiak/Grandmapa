@@ -40,25 +40,19 @@ public class SosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sos);
 
-        callingTextView = findViewById(R.id.calling_text_view); // Initialize callingTextView
+        callingTextView = findViewById(R.id.calling_text_view);
 
-        // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("SOSPreferences", Context.MODE_PRIVATE);
         String savedContactName = sharedPreferences.getString("SOSContactName", null);
         String savedContactNumber = sharedPreferences.getString("SOSContactNumber", null);
 
         if (savedContactName != null && savedContactNumber != null) {
-            // Display "Calling [SOS Contact Name]" message
             callingTextView.setText("Κλήση " + savedContactName);
             callingTextView.setVisibility(View.VISIBLE);
-
-            // Call the saved SOS contact directly
             callSOSContact(savedContactNumber);
         } else {
-            // Show message and allow the user to select a contact
-            Toast.makeText(this, "Select Sos Contact", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Επέλεξε επαφή έκτακτης ανάγκης", Toast.LENGTH_SHORT).show();
 
-            // Check for READ_CONTACTS permission
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
@@ -73,23 +67,18 @@ public class SosActivity extends AppCompatActivity {
                     String contactName = contactNames.get(position);
                     String contactNumber = contactsMap.get(contactName);
 
-                    // Save selected contact as SOS contact
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("SOSContactName", contactName);
                     editor.putString("SOSContactNumber", contactNumber);
                     editor.apply();
 
-                    // Display "Calling [SOS Contact Name]" message
                     callingTextView.setText("Calling " + contactName);
                     callingTextView.setVisibility(View.VISIBLE);
-
-                    // Make a call to this number
                     callSOSContact(contactNumber);
                 }
             });
         }
     }
-
 
     private void loadContacts() {
         ContentResolver contentResolver = getContentResolver();
@@ -111,16 +100,6 @@ public class SosActivity extends AppCompatActivity {
         contactsListView.setAdapter(adapter);
     }
 
-    private void callSOSContact(String contactNumber) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-                == PackageManager.PERMISSION_GRANTED) {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + contactNumber));
-            startActivity(callIntent);
-        } else {
-            Toast.makeText(this, "Permission to make calls not granted.", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -131,6 +110,29 @@ public class SosActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Permission to read contacts not granted", Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == REQUEST_CALL_PHONE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                String savedContactNumber = sharedPreferences.getString("SOSContactNumber", null);
+                if (savedContactNumber != null) {
+                    callSOSContact(savedContactNumber);
+                }
+            } else {
+                Toast.makeText(this, "Permission to make calls not granted", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
+    private static final int REQUEST_CALL_PHONE = 2;
+
+    private void callSOSContact(String contactNumber) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                == PackageManager.PERMISSION_GRANTED) {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + contactNumber));
+            startActivity(callIntent);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PHONE);
+        }
+    }
+
 }

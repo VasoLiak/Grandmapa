@@ -3,7 +3,9 @@ package com.example.grandmapa;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +24,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private String contactPhone;
     private long contactId;
     private boolean isSOSContact = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,12 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         nameTextView.setText(contactName);
         phoneTextView.setText(contactPhone);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("SOSPreferences", Context.MODE_PRIVATE);
+        String savedContactName = sharedPreferences.getString("SOSContactName", null);
+        String savedContactNumber = sharedPreferences.getString("SOSContactNumber", null);
+
+        isSOSContact = contactName.equals(savedContactName);
 
         starImageView.setImageResource(isSOSContact ? R.drawable.fullstar : R.drawable.emptystar);
 
@@ -62,16 +72,50 @@ public class ContactDetailActivity extends AppCompatActivity {
         starImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isSOSContact = !isSOSContact;
-                starImageView.setImageResource(isSOSContact ? R.drawable.fullstar : R.drawable.emptystar);
-
                 if (isSOSContact) {
-                    showToast("Προσθήκη επαφής ως έκτακτης ανάγκης!");
+                    removeSOSContact(sharedPreferences, starImageView);
                 } else {
-                    showToast("Κατάργηση επαφής ως έκτακτης ανάγκης!");
+                    if (savedContactName != null && !contactName.equals(savedContactName)) {
+                        showConfirmationDialog(sharedPreferences, starImageView, contactName, contactPhone);
+                    } else {
+                        setSOSContact(sharedPreferences, starImageView, contactName, contactPhone);
+                    }
                 }
             }
         });
+    }
+
+    private void showConfirmationDialog(SharedPreferences sharedPreferences, ImageView starImageView, String newContactName, String newContactPhone) {
+        new AlertDialog.Builder(this)
+                .setTitle("Αλλαγή επαφής SOS")
+                .setMessage("Έχετε επιλέξει μια άλλη επαφή ως έκτακτης ανάγκης. Είστε σίγουροι ότι θέλετε να την αλλάξετε με τον χρήστη " + newContactName + ";")
+                .setPositiveButton("Ναι", (dialog, which) -> setSOSContact(sharedPreferences, starImageView, newContactName, newContactPhone))
+                .setNegativeButton("Όχι", null)
+                .show();
+    }
+
+    private void setSOSContact(SharedPreferences sharedPreferences, ImageView starImageView, String contactName, String contactPhone) {
+        isSOSContact = true;
+        starImageView.setImageResource(R.drawable.fullstar);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("SOSContactName", contactName);
+        editor.putString("SOSContactNumber", contactPhone);
+        editor.apply();
+
+        showToast("Η επαφή καταχωρήθηκε ως έκτακτης ανάγκης!");
+    }
+
+    private void removeSOSContact(SharedPreferences sharedPreferences, ImageView starImageView) {
+        isSOSContact = false;
+        starImageView.setImageResource(R.drawable.emptystar);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("SOSContactName");
+        editor.remove("SOSContactNumber");
+        editor.apply();
+
+        showToast("Η επαφή αφαιρέθηκε ως έκτακτης ανάγκης!");
     }
 
     @SuppressLint("Range")
@@ -85,7 +129,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 contactId = cursor.getLong(cursor.getColumnIndex(ContactsContract.PhoneLookup._ID));
                 Uri deleteUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
                 contentResolver.delete(deleteUri, null, null);
-                Toast.makeText(this, "Contact deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Επιτυχής διαγραφή επαφής", Toast.LENGTH_SHORT).show();
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("action", "delete");

@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-import java.util.Iterator;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +25,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 
 public class CatalogueActivity extends AppCompatActivity {
 
@@ -129,6 +131,14 @@ public class CatalogueActivity extends AppCompatActivity {
             cursor.close();
         }
 
+        // Sort the contactList alphabetically by name
+        Collections.sort(contactList, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact o1, Contact o2) {
+                return o1.getName().compareToIgnoreCase(o2.getName());
+            }
+        });
+
         adapter.notifyDataSetChanged();
     }
 
@@ -196,7 +206,6 @@ public class CatalogueActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void updateContactInList(long contactId, String newName, String newPhone) {
         for (Contact contact : contactList) {
