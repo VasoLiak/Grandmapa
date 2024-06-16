@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        NotificationUtils.createNotificationChannel(this);
+
         TextView dateTextView = findViewById(R.id.date);
         TextView timeTextView = findViewById(R.id.time);
         ImageView sosImageView = findViewById(R.id.sos);
