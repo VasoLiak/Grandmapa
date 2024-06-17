@@ -35,5 +35,6 @@ public class Medicine {
     public void setTaken(boolean taken) {
         this.taken = taken;
     }
+
 }
 

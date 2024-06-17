@@ -1,34 +1,38 @@
 package com.example.grandmapa;
 
-import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.grandmapa.MedicineUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private static final int PERMISSION_REQUEST_SCHEDULE_EXACT_ALARM = 1001;
+    private static final String PREFS_NAME = "MedicinePrefs";
+    private static final String KEY_MEDICINE_MAP = "medicineMap";
 
     private RecyclerView recyclerViewHours;
     private TextView textViewDate;
     private MedicineAdapter medicineAdapter;
-    private List<Medicine> medicineList;
+    private Map<String, List<Medicine>> medicineMap; // Map to store medicines by date
     private String date;
 
     @Override
@@ -39,71 +43,92 @@ public class DetailActivity extends AppCompatActivity {
         textViewDate = findViewById(R.id.textView);
         recyclerViewHours = findViewById(R.id.recyclerViewHours);
         ImageView backImageView = findViewById(R.id.back);
+        ImageView AddMedicine = findViewById(R.id.add);
 
-        backImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DetailActivity.this, CalendarActivity.class);
-                startActivity(intent);
-            }
+        backImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(DetailActivity.this, CalendarActivity.class);
+            startActivity(intent);
         });
 
         date = getIntent().getStringExtra("date");
         textViewDate.setText("Επιλεγμένη ημερομηνία: " + date);
 
-        initializeMedicineList();
-        medicineAdapter = new MedicineAdapter(this, medicineList);
+        // Initialize medicineMap if null
+        if (medicineMap == null) {
+            loadMedicines();
+        }
+
+        // Initialize or create medicineList for the current date
+        if (!medicineMap.containsKey(date)) {
+            medicineMap.put(date, new ArrayList<>());
+        }
+
+        // Initialize RecyclerView and Adapter with medicines for the current date
+        medicineAdapter = new MedicineAdapter(this, medicineMap.get(date));
         recyclerViewHours.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewHours.setAdapter(medicineAdapter);
 
-        // Request the SCHEDULE_EXACT_ALARM permission if needed
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted, request it
-                requestScheduleExactAlarmPermission();
-            } else {
-                // Permission is already granted, proceed with your logic
-                // Initialize alarms or any other relevant operations
-            }
+        AddMedicine.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Προσθέστε φάρμακο");
+
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.item_hour, null);
+            builder.setView(dialogView);
+
+            final EditText editTextTime = dialogView.findViewById(R.id.editTextTime);
+            final EditText editTextMedicine = dialogView.findViewById(R.id.editTextMedicine);
+
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                String time = editTextTime.getText().toString();
+                String medicineName = editTextMedicine.getText().toString();
+
+                // Check if medicine already exists for the current date
+                boolean alreadyExists = false;
+                List<Medicine> medicines = medicineMap.get(date);
+                for (Medicine med : medicines) {
+                    if (med.getTime().equals(time) && med.getName().equals(medicineName)) {
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyExists) {
+                    // Add new medicine to the list for the current date
+                    Medicine newMedicine = new Medicine(time, medicineName, false);
+                    medicines.add(newMedicine);
+                    medicineAdapter.addMedicine(newMedicine);
+
+                    // Save updated list of medicines for the current date
+                    saveMedicines();
+
+                } else {
+                    Toast.makeText(this, "Το φάρμακο υπάρχει ήδη στη λίστα για αυτήν την ημερομηνία", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setNegativeButton("Άκυρο", (dialog, which) -> dialog.cancel());
+
+            builder.show();
+        });
+    }
+
+    private void loadMedicines() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String json = prefs.getString(KEY_MEDICINE_MAP, null);
+        if (json != null) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, List<Medicine>>>() {}.getType();
+            medicineMap = gson.fromJson(json, type);
+        } else {
+            medicineMap = new HashMap<>();
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
-    private void requestScheduleExactAlarmPermission() {
-        // Request the SCHEDULE_EXACT_ALARM permission
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM},
-                PERMISSION_REQUEST_SCHEDULE_EXACT_ALARM);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_SCHEDULE_EXACT_ALARM) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with your logic
-                // Initialize alarms or any other relevant operations
-            } else {
-                // Permission denied, inform the user
-                // Handle the case where the user denies the permission
-            }
-        }
-    }
-
-    private void initializeMedicineList() {
-        medicineList = MedicineUtils.loadMedicines(this, date);
-        if (medicineList.isEmpty()) {
-            for (int i = 0; i < 24; i++) {
-                String hour = (i < 10 ? "0" + i : i) + ":00";
-                medicineList.add(new Medicine(hour, "", false));
-            }
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MedicineUtils.saveMedicines(this, date, medicineList);
+    private void saveMedicines() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(medicineMap);
+        editor.putString(KEY_MEDICINE_MAP, json);
+        editor.apply();
     }
 }
