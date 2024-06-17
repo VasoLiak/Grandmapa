@@ -8,7 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +46,9 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
         Medicine medicine = medicineList.get(position);
 
         holder.textViewHour.setText(medicine.getTime());
-        holder.textViewMedicine.setText(medicine.getName().isEmpty() ? "Προσθέστε φάρμακο" : medicine.getName());
+        holder.textViewMedicine.setText(TextUtils.isEmpty(medicine.getName()) ? "Προσθέστε φάρμακο" : medicine.getName());
         holder.checkBoxTaken.setChecked(medicine.isTaken());
-        holder.checkBoxTaken.setVisibility(medicine.getName().isEmpty() ? View.GONE : View.VISIBLE);
+        holder.checkBoxTaken.setVisibility(TextUtils.isEmpty(medicine.getName()) ? View.GONE : View.VISIBLE);
 
         holder.textViewMedicine.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -59,17 +60,23 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
 
             final EditText editTextTime = dialogView.findViewById(R.id.editTextTime);
             final EditText editTextMedicine = dialogView.findViewById(R.id.editTextMedicine);
+            final EditText editTextNotificationTime = dialogView.findViewById(R.id.editTextNotificationTime);
 
             builder.setPositiveButton("OK", (dialog, which) -> {
                 String time = editTextTime.getText().toString();
                 String medicineName = editTextMedicine.getText().toString();
+                String notificationTime = editTextNotificationTime.getText().toString();
+
                 medicine.setTime(time);
                 medicine.setName(medicineName);
                 holder.checkBoxTaken.setVisibility(View.VISIBLE);
                 notifyDataSetChanged(); // Ensure to notify adapter of data change
 
-                // Schedule notification
-                scheduleNotification(context, time, medicineName);
+                // Schedule notifications
+                scheduleMedicineNotification(context, time, medicineName);
+                if (!TextUtils.isEmpty(notificationTime)) {
+                    scheduleNotification(context, notificationTime, medicineName);
+                }
 
                 // Save medicine state
                 saveMedicineState(medicine);
@@ -84,7 +91,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
             saveMedicineState(medicine); // Save medicine state when checkbox state changes
         });
 
-        holder.ImageViewDelete.setOnClickListener(v -> {
+        holder.imageViewDelete.setOnClickListener(v -> {
             showDeleteConfirmationDialog(medicine);
         });
     }
@@ -125,8 +132,69 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    private void scheduleNotification(Context context, String hour, String medicineName) {
-        // Implementation remains the same as in your code
+    private void scheduleMedicineNotification(Context context, String hour, String medicineName) {
+        Log.d("MedicineAdapter", "Scheduling medicine notification for " + hour + ": " + medicineName);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("medicine_name", medicineName);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, medicineName.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Parse hour to set alarm
+        Calendar calendar = Calendar.getInstance();
+        String[] timeParts = hour.split(":");
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeParts[0]));
+        calendar.set(Calendar.MINUTE, Integer.parseInt(timeParts[1]));
+        calendar.set(Calendar.SECOND, 0);
+
+        long alarmTime = calendar.getTimeInMillis();
+
+        // Check if the time is in the past, if so, add one day
+        if (alarmTime < System.currentTimeMillis()) {
+            alarmTime += AlarmManager.INTERVAL_DAY;
+        }
+
+        // Set the alarm
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        }
+
+        Log.d("MedicineAdapter", "Medicine notification scheduled for " + calendar.getTime().toString());
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    private void scheduleNotification(Context context, String notificationTime, String medicineName) {
+        Log.d("MedicineAdapter", "Scheduling notification for " + notificationTime + ": " + medicineName);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("medicine_name", medicineName);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, medicineName.hashCode() + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Parse notification time to set alarm
+        Calendar notificationCalendar = Calendar.getInstance();
+        String[] timeParts = notificationTime.split(":");
+        notificationCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeParts[0]));
+        notificationCalendar.set(Calendar.MINUTE, Integer.parseInt(timeParts[1]));
+        notificationCalendar.set(Calendar.SECOND, 0);
+
+        long alarmTime = notificationCalendar.getTimeInMillis();
+
+        // Check if the time is in the past, if so, add one day
+        if (alarmTime < System.currentTimeMillis()) {
+            alarmTime += AlarmManager.INTERVAL_DAY;
+        }
+
+        // Set the alarm
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+        }
+
+        Log.d("MedicineAdapter", "Notification scheduled for " + notificationCalendar.getTime().toString());
     }
 
     private void saveMedicineState(Medicine medicine) {
@@ -145,7 +213,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
     }
 
     public static class MedicineViewHolder extends RecyclerView.ViewHolder {
-        public View ImageViewDelete;
+        ImageView imageViewDelete;
         TextView textViewHour, textViewMedicine;
         CheckBox checkBoxTaken;
 
@@ -154,7 +222,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
             textViewHour = itemView.findViewById(R.id.editTextTime);
             textViewMedicine = itemView.findViewById(R.id.editTextMedicine);
             checkBoxTaken = itemView.findViewById(R.id.checkBoxTaken);
-            ImageViewDelete = itemView.findViewById(R.id.delete);
+            imageViewDelete = itemView.findViewById(R.id.delete);
         }
     }
 }

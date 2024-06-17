@@ -12,6 +12,7 @@
         android:layout_width="222dp"
         android:layout_height="42dp"
         android:hint="Ώρα (HH:mm)"
+        android:fontFamily="@font/jura"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -23,12 +24,26 @@
         android:layout_width="233dp"
         android:layout_height="42dp"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/jura"
         android:hint="Όνομα φαρμάκου"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
+
+    <EditText
+        android:id="@+id/editTextNotificationTime"
+        android:layout_width="178dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/jura"
+        android:hint="Ώρα ειδοποίησης"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextMedicine" />
 
     <CheckBox
         android:id="@+id/checkBoxTaken"

@@ -94,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (!alreadyExists) {
                     // Add new medicine to the list for the current date
-                    Medicine newMedicine = new Medicine(time, medicineName, false);
+                    Medicine newMedicine = new Medicine(time, medicineName, false, "default_notification_time");
                     medicines.add(newMedicine);
                     medicineAdapter.addMedicine(newMedicine);
 

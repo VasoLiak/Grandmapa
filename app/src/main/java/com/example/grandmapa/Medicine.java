@@ -5,11 +5,13 @@ public class Medicine {
     private String time;
     private String name;
     private boolean taken;
+    private String notificationTime;
 
-    public Medicine(String time, String name, boolean taken) {
+    public Medicine(String time, String name, boolean taken, String notificationTime) {
         this.time = time;
         this.name = name;
         this.taken = taken;
+        this.notificationTime = null;
     }
 
     public String getTime() {
@@ -36,5 +38,12 @@ public class Medicine {
         this.taken = taken;
     }
 
+    public String getNotificationTime() {
+        return notificationTime;
+    }
+
+    public void setNotificationTime(String notificationTime) {
+        this.notificationTime = notificationTime;
+    }
 }
 
