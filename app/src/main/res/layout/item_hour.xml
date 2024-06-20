@@ -32,19 +32,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
 
-    <EditText
-        android:id="@+id/editTextNotificationTime"
-        android:layout_width="178dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/jura"
-        android:hint="Ώρα ειδοποίησης"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextMedicine" />
-
     <CheckBox
         android:id="@+id/checkBoxTaken"
         android:layout_width="wrap_content"

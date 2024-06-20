@@ -1,18 +1,17 @@
 package com.example.grandmapa;
 
-
 public class Medicine {
     private String time;
     private String name;
     private boolean taken;
-    private String notificationTime;
 
-    public Medicine(String time, String name, boolean taken, String notificationTime) {
+    public Medicine(String time, String name, boolean taken) {
         this.time = time;
         this.name = name;
         this.taken = taken;
-        this.notificationTime = null;
     }
+
+    // Getters and setters
 
     public String getTime() {
         return time;
@@ -37,13 +36,4 @@ public class Medicine {
     public void setTaken(boolean taken) {
         this.taken = taken;
     }
-
-    public String getNotificationTime() {
-        return notificationTime;
-    }
-
-    public void setNotificationTime(String notificationTime) {
-        this.notificationTime = notificationTime;
-    }
 }
-

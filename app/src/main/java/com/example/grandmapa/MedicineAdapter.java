@@ -60,12 +60,10 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
 
             final EditText editTextTime = dialogView.findViewById(R.id.editTextTime);
             final EditText editTextMedicine = dialogView.findViewById(R.id.editTextMedicine);
-            final EditText editTextNotificationTime = dialogView.findViewById(R.id.editTextNotificationTime);
 
             builder.setPositiveButton("OK", (dialog, which) -> {
                 String time = editTextTime.getText().toString();
                 String medicineName = editTextMedicine.getText().toString();
-                String notificationTime = editTextNotificationTime.getText().toString();
 
                 medicine.setTime(time);
                 medicine.setName(medicineName);
@@ -74,9 +72,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
 
                 // Schedule notifications
                 scheduleMedicineNotification(context, time, medicineName);
-                if (!TextUtils.isEmpty(notificationTime)) {
-                    scheduleNotification(context, notificationTime, medicineName);
-                }
 
                 // Save medicine state
                 saveMedicineState(medicine);
@@ -128,8 +123,15 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
         if (position != -1) {
             medicineList.remove(position);
             notifyItemRemoved(position);
+
+            // Notify DetailActivity to save updated medicineMap
+            if (context instanceof DetailActivity) {
+                ((DetailActivity) context).saveMedicines();
+            }
         }
     }
+
+
 
     @SuppressLint("ScheduleExactAlarm")
     private void scheduleMedicineNotification(Context context, String hour, String medicineName) {
