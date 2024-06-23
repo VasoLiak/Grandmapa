@@ -166,39 +166,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
         Log.d("MedicineAdapter", "Medicine notification scheduled for " + calendar.getTime().toString());
     }
 
-    @SuppressLint("ScheduleExactAlarm")
-    private void scheduleNotification(Context context, String notificationTime, String medicineName) {
-        Log.d("MedicineAdapter", "Scheduling notification for " + notificationTime + ": " + medicineName);
-
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("medicine_name", medicineName);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, medicineName.hashCode() + 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Parse notification time to set alarm
-        Calendar notificationCalendar = Calendar.getInstance();
-        String[] timeParts = notificationTime.split(":");
-        notificationCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeParts[0]));
-        notificationCalendar.set(Calendar.MINUTE, Integer.parseInt(timeParts[1]));
-        notificationCalendar.set(Calendar.SECOND, 0);
-
-        long alarmTime = notificationCalendar.getTimeInMillis();
-
-        // Check if the time is in the past, if so, add one day
-        if (alarmTime < System.currentTimeMillis()) {
-            alarmTime += AlarmManager.INTERVAL_DAY;
-        }
-
-        // Set the alarm
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-        } else {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-        }
-
-        Log.d("MedicineAdapter", "Notification scheduled for " + notificationCalendar.getTime().toString());
-    }
-
     private void saveMedicineState(Medicine medicine) {
         SharedPreferences prefs = context.getSharedPreferences("MedicinePrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();

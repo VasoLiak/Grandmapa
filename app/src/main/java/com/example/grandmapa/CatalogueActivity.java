@@ -191,7 +191,7 @@ public class CatalogueActivity extends AppCompatActivity {
             Toast.makeText(this, "Επιτυχής προσθήκη επαφής!", Toast.LENGTH_SHORT).show();
         } catch (RemoteException | OperationApplicationException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error adding contact", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Αποτυχία προσθήκης επαφής", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -205,17 +205,6 @@ public class CatalogueActivity extends AppCompatActivity {
                 deleteContactFromList(contactId);
             }
         }
-    }
-
-    private void updateContactInList(long contactId, String newName, String newPhone) {
-        for (Contact contact : contactList) {
-            if (contact.getId() == contactId) {
-                contact.setName(newName);
-                contact.setPhone(newPhone);
-                break;
-            }
-        }
-        adapter.notifyDataSetChanged();
     }
 
     private void deleteContactFromList(long contactId) {

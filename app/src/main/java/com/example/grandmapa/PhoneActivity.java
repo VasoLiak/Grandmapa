@@ -85,7 +85,7 @@ public class PhoneActivity extends AppCompatActivity {
         String phoneNumber = phoneNumberDisplay.getText().toString();
 
         if (phoneNumber.isEmpty()) {
-            Toast.makeText(this, "Enter a phone number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Εισάγετε έναν αριθμό τηλεφώνου", Toast.LENGTH_SHORT).show();
         } else {
             if (ContextCompat.checkSelfPermission(PhoneActivity.this,
                     Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

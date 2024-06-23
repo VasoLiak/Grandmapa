@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MenuActivity extends AppCompatActivity {
-    private static final String BIRIBA_PACKAGE_NAME = "air.com.lazyland.biriba"; //mporei na prepei na fygei to air.
+    private static final String BIRIBA_PACKAGE_NAME = "air.com.lazyland.biriba";
     private static final String SOLITAIRE_PACKAGE_NAME = "com.karmangames.solitaire";
 
     @Override
@@ -108,7 +108,7 @@ public class MenuActivity extends AppCompatActivity {
         if (launchIntent != null) {
             startActivity(launchIntent);
         } else {
-            Toast.makeText(this, "App is not installed.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Απαιτείται εγκατάσταση της εφαρμογής.", Toast.LENGTH_LONG).show();
         }
     }
 }
