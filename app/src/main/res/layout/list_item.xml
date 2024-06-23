@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="59dp"
+        android:layout_height="59dp"
         android:layout_marginTop="48dp"
         android:src="@drawable/profile1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +24,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="56dp"
         android:text="Contact Name"
-        android:textSize="18sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/photo"

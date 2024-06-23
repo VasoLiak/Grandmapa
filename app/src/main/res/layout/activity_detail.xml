@@ -10,14 +10,14 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="334dp"
-        android:layout_height="88dp"
+        android:layout_width="287dp"
+        android:layout_height="171dp"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/jura"
         android:text="Επιλεγμένη Ημερομηνία"
-        android:textSize="24sp"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.974"
+        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,8 +32,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHours"
-        android:layout_width="363dp"
-        android:layout_height="487dp"
+        android:layout_width="409dp"
+        android:layout_height="486dp"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
