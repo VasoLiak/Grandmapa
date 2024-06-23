@@ -188,7 +188,7 @@ public class CatalogueActivity extends AppCompatActivity {
         try {
             getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
             loadContacts(); // Refresh the contact list
-            Toast.makeText(this, "Contact added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Επιτυχής προσθήκη επαφής!", Toast.LENGTH_SHORT).show();
         } catch (RemoteException | OperationApplicationException e) {
             e.printStackTrace();
             Toast.makeText(this, "Error adding contact", Toast.LENGTH_SHORT).show();

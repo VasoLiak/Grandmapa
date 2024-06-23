@@ -10,18 +10,18 @@
 
     <TextView
         android:id="@+id/TextView"
-        android:layout_width="206dp"
-        android:layout_height="88dp"
+        android:layout_width="239dp"
+        android:layout_height="106dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/jura"
         android:padding="16dp"
         android:text="Επαφές"
         android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.593"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

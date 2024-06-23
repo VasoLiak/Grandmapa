@@ -1,5 +1,6 @@
 package com.example.grandmapa;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -182,10 +183,11 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     private void scheduleNotification(long alarmTimeMillis, String message) {
         Intent intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("message", message);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
