@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.app.AlarmManagerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.Calendar;
 import java.util.List;
@@ -27,7 +25,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
 
     private List<Medicine> medicineList;
     private Context context;
-
     public MedicineAdapter(Context context, List<Medicine> medicineList) {
         this.context = context;
         this.medicineList = medicineList;
@@ -54,7 +51,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Προσθέστε φάρμακο");
 
-            // Inflate custom layout
+            // Inflate custom layout for dialog
             View dialogView = LayoutInflater.from(context).inflate(R.layout.item_hour, null);
             builder.setView(dialogView);
 
@@ -124,19 +121,15 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
             medicineList.remove(position);
             notifyItemRemoved(position);
 
-            // Notify DetailActivity to save updated medicineMap
+            // Notify DetailActivity to save updated medicine list
             if (context instanceof DetailActivity) {
                 ((DetailActivity) context).saveMedicines();
             }
         }
     }
 
-
-
     @SuppressLint("ScheduleExactAlarm")
     private void scheduleMedicineNotification(Context context, String hour, String medicineName) {
-        Log.d("MedicineAdapter", "Scheduling medicine notification for " + hour + ": " + medicineName);
-
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("medicine_name", medicineName);
@@ -162,8 +155,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
         } else {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
         }
-
-        Log.d("MedicineAdapter", "Medicine notification scheduled for " + calendar.getTime().toString());
     }
 
     private void saveMedicineState(Medicine medicine) {

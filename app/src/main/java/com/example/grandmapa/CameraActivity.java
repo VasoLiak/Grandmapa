@@ -1,9 +1,6 @@
 package com.example.grandmapa;
 
 import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,8 +13,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private SoundPool soundPool;
-    private int soundID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +28,7 @@ public class CameraActivity extends AppCompatActivity {
         ImageView backImageView = findViewById(R.id.back);
         ImageView photosImageView = findViewById(R.id.photos);
 
+        //back button
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +37,7 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
 
+        //photos button
         photosImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

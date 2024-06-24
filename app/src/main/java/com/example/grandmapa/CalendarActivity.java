@@ -18,6 +18,7 @@ public class CalendarActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_calendar);
 
+        //back button
         ImageView backImageView = findViewById(R.id.back);
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -27,6 +28,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
+        //calendar creation
         CalendarView calendarView = findViewById(R.id.calendar);
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {

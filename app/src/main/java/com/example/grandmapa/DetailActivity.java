@@ -55,29 +55,32 @@ public class DetailActivity extends AppCompatActivity {
         ImageView backImageView = findViewById(R.id.back);
         ImageView addMedicine = findViewById(R.id.add);
 
+        //back button
         backImageView.setOnClickListener(v -> {
             Intent intent = new Intent(DetailActivity.this, CalendarActivity.class);
             startActivity(intent);
         });
 
+        // Get the selected date from intent and display it
         date = getIntent().getStringExtra("date");
         textViewDate.setText("Επιλεγμένη ημερομηνία: " + date);
 
-        // Initialize medicineMap if null
+        // Load medicines from SharedPreferences
         if (medicineMap == null) {
             loadMedicines();
         }
 
-        // Initialize or create medicineList for the current date
+        // Initialize or create medicine list for the current date
         if (!medicineMap.containsKey(date)) {
             medicineMap.put(date, new ArrayList<>());
         }
 
-        // Initialize RecyclerView and Adapter with medicines for the current date
+        // Set up RecyclerView with the medicines for the current date
         medicineAdapter = new MedicineAdapter(this, medicineMap.get(date));
         recyclerViewHours.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewHours.setAdapter(medicineAdapter);
 
+        // Set up the add medicine button to show a dialog
         addMedicine.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Προσθέστε φάρμακο");
@@ -98,7 +101,7 @@ public class DetailActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Check if medicine already exists for the current date
+                // Check if the medicine already exists for the current date
                 boolean alreadyExists = false;
                 List<Medicine> medicines = medicineMap.get(date);
                 for (Medicine med : medicines) {
@@ -114,7 +117,7 @@ public class DetailActivity extends AppCompatActivity {
                     medicines.add(newMedicine);
                     medicineAdapter.addMedicine(newMedicine);
 
-                    // Save updated list of medicines for the current date
+                    // Save the updated list of medicines for the current date
                     saveMedicines();
 
                     // Schedule notifications
@@ -130,6 +133,7 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    // Validate time format (HH:mm)
     private boolean isValidTimeFormat(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         sdf.setLenient(false);
@@ -142,6 +146,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    // Save medicines to SharedPreferences
     void saveMedicines() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -151,6 +156,7 @@ public class DetailActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    // Load medicines from SharedPreferences
     private void loadMedicines() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String json = prefs.getString(KEY_MEDICINE_MAP, null);
@@ -163,11 +169,10 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
+    // Schedule notifications for the medicine
     private void scheduleNotifications(String date, String time, String medicineName) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         try {
-            // Parse date and time separately
             Date datetime = sdf.parse(date + " " + time);
 
             // Set calendar to the parsed date and time
@@ -175,7 +180,6 @@ public class DetailActivity extends AppCompatActivity {
             calendar.setTime(datetime);
 
             // Schedule notification at exact time
-            calendar.setTime(datetime); // Reset calendar to original datetime
             scheduleNotification(calendar.getTimeInMillis(), "Μην ξεχάσετε να πάρετε την αγωγή σας: " + medicineName + " (" + time + ")");
         } catch (ParseException e) {
             e.printStackTrace();
@@ -198,5 +202,4 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     }
-
 }

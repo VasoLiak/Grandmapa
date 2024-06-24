@@ -22,6 +22,7 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_menu);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -36,6 +37,8 @@ public class MenuActivity extends AppCompatActivity {
         ImageView photosImageView = findViewById(R.id.photos);
 
         radioImageView.setOnClickListener(v -> launchRadioApp());
+
+        //button
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +47,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        //solitaire game button
         pasietzaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +55,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        //biriba game button
         mpirimpaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +63,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        //camera button
         cameraImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +72,7 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        //photos button
         photosImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +82,7 @@ public class MenuActivity extends AppCompatActivity {
         });
     }
 
+    // Method to launch a radio app if installed or redirect to the Play Store if not
     private void launchRadioApp() {
         String[] radioPackages = {
                 "com.sec.android.app.fm",
@@ -88,6 +96,7 @@ public class MenuActivity extends AppCompatActivity {
         };
 
         boolean appFound = false;
+        // Try to find a radio app installed on the device
         for (String packageName : radioPackages) {
             Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
             if (intent != null) {
@@ -97,12 +106,14 @@ public class MenuActivity extends AppCompatActivity {
             }
         }
 
+        // If no radio app is found, redirect to the Play Store to install one
         if (!appFound) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.nextradioapp.nextradio"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("com.nextradioapp.nextradio"));
             startActivity(intent);
         }
     }
 
+    // Method to launch a game app if installed, or show a toast if not
     private void launchGame(String packageName) {
         Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
         if (launchIntent != null) {

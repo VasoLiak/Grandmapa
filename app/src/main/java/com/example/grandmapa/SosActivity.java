@@ -29,10 +29,14 @@ import java.util.HashMap;
 public class SosActivity extends AppCompatActivity {
 
     private static final int REQUEST_READ_CONTACTS = 1;
+    private static final int REQUEST_CALL_PHONE = 2;
+
     private ListView contactsListView;
     private TextView callingTextView;
+
     private ArrayList<String> contactNames = new ArrayList<>();
     private HashMap<String, String> contactsMap = new HashMap<>();
+
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -42,28 +46,35 @@ public class SosActivity extends AppCompatActivity {
 
         callingTextView = findViewById(R.id.calling_text_view);
 
+        // Retrieve shared preferences
         sharedPreferences = getSharedPreferences("SOSPreferences", Context.MODE_PRIVATE);
         String savedContactName = sharedPreferences.getString("SOSContactName", null);
         String savedContactNumber = sharedPreferences.getString("SOSContactNumber", null);
 
         if (savedContactName != null && savedContactNumber != null) {
+            // If an SOS contact is already saved, display it and initiate a call
             callingTextView.setText("Κλήση " + savedContactName);
             callingTextView.setVisibility(View.VISIBLE);
             callSOSContact(savedContactNumber);
         } else {
+            // If no SOS contact is saved, prompt user to select one
             Toast.makeText(this, "Επέλεξε επαφή έκτακτης ανάγκης", Toast.LENGTH_SHORT).show();
 
+            // Check for permission to read contacts
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_CONTACTS}, REQUEST_READ_CONTACTS);
             } else {
+                // Load contacts
                 loadContacts();
             }
 
+            // Set up on-click listener for the contacts list view
             contactsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // When a contact is selected, save it as SOS contact and initiate a call
                     String contactName = contactNames.get(position);
                     String contactNumber = contactsMap.get(contactName);
 
@@ -80,6 +91,7 @@ public class SosActivity extends AppCompatActivity {
         }
     }
 
+    // Method to load contacts from the device's contact list
     private void loadContacts() {
         ContentResolver contentResolver = getContentResolver();
         Cursor cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -100,7 +112,7 @@ public class SosActivity extends AppCompatActivity {
         contactsListView.setAdapter(adapter);
     }
 
-
+    // Handle the result of permission requests
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -122,8 +134,7 @@ public class SosActivity extends AppCompatActivity {
         }
     }
 
-    private static final int REQUEST_CALL_PHONE = 2;
-
+    // Method to initiate a call to the SOS contact
     private void callSOSContact(String contactNumber) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -134,5 +145,4 @@ public class SosActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PHONE);
         }
     }
-
 }

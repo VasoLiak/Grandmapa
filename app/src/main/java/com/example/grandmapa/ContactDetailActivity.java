@@ -20,11 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class ContactDetailActivity extends AppCompatActivity {
 
-    private String contactName;
-    private String contactPhone;
+    private String contactName, contactPhone;
     private long contactId;
+    // Flag to check if the contact is marked as SOS contact
     private boolean isSOSContact = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +37,27 @@ public class ContactDetailActivity extends AppCompatActivity {
         ImageView backImageView = findViewById(R.id.back);
         ImageView starImageView = findViewById(R.id.star_image);
 
+        // Get contact details from the intent
         contactId = getIntent().getLongExtra("ContactId", -1);
         contactName = getIntent().getStringExtra("ContactName");
         contactPhone = getIntent().getStringExtra("ContactPhone");
 
+        // Set the contact details to the respective TextViews
         nameTextView.setText(contactName);
         phoneTextView.setText(contactPhone);
 
+        // Retrieve saved SOS contact details from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("SOSPreferences", Context.MODE_PRIVATE);
         String savedContactName = sharedPreferences.getString("SOSContactName", null);
         String savedContactNumber = sharedPreferences.getString("SOSContactNumber", null);
 
+        // Check if the current contact is the SOS contact
         isSOSContact = contactName.equals(savedContactName);
 
+        // Set the appropriate star image based on whether the contact is SOS contact
         starImageView.setImageResource(isSOSContact ? R.drawable.fullstar : R.drawable.emptystar);
 
+        //back button
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,8 +66,10 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         });
 
+
         deleteImageView.setOnClickListener(v -> deleteContact(contactPhone));
 
+        //call button
         callButton.setOnClickListener(v -> {
             Intent dialIntent = new Intent(Intent.ACTION_DIAL);
             dialIntent.setData(Uri.parse("tel:" + contactPhone));
@@ -73,11 +80,14 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isSOSContact) {
+                    // If the current contact is already SOS contact, remove it from SOS contacts
                     removeSOSContact(sharedPreferences, starImageView);
                 } else {
+                    // If there is another SOS contact already set, show confirmation dialog
                     if (savedContactName != null && !contactName.equals(savedContactName)) {
                         showConfirmationDialog(sharedPreferences, starImageView, contactName, contactPhone);
                     } else {
+                        // Otherwise, set the current contact as SOS contact
                         setSOSContact(sharedPreferences, starImageView, contactName, contactPhone);
                     }
                 }
@@ -85,6 +95,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
     }
 
+    // Show a confirmation dialog before changing the SOS contact
     private void showConfirmationDialog(SharedPreferences sharedPreferences, ImageView starImageView, String newContactName, String newContactPhone) {
         new AlertDialog.Builder(this)
                 .setTitle("Αλλαγή επαφής SOS")
@@ -94,6 +105,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Set the current contact as SOS contact
     private void setSOSContact(SharedPreferences sharedPreferences, ImageView starImageView, String contactName, String contactPhone) {
         isSOSContact = true;
         starImageView.setImageResource(R.drawable.fullstar);
@@ -106,6 +118,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         showToast("Η επαφή καταχωρήθηκε ως έκτακτης ανάγκης!");
     }
 
+    // Remove the current SOS contact
     private void removeSOSContact(SharedPreferences sharedPreferences, ImageView starImageView) {
         isSOSContact = false;
         starImageView.setImageResource(R.drawable.emptystar);
@@ -118,6 +131,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         showToast("Η επαφή αφαιρέθηκε ως έκτακτης ανάγκης!");
     }
 
+    // Delete the contact from the contacts list
     @SuppressLint("Range")
     private void deleteContact(String phoneNumber) {
         ContentResolver contentResolver = getContentResolver();
@@ -143,6 +157,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
         }
     }
+
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }

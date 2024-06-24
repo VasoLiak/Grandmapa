@@ -36,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
         dateTextView.setText(currentDate);
         timeTextView.setText(currentTime);
 
+        // Create Intent to start the next activities
         sosImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create Intent to start the second activity
                 Intent intent = new Intent(MainActivity.this, SosActivity.class);
                 startActivity(intent);
             }
@@ -77,10 +77,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    //current date
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
         return sdf.format(new Date());
     }
+
+    //current time
     private String getCurrentTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date());

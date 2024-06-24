@@ -45,14 +45,17 @@ public class CatalogueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalogue);
 
+        // Initialize UI components
         contactListView = findViewById(R.id.contact_list_view);
         addContactButton = findViewById(R.id.add_contact_button);
         ImageView backImageView = findViewById(R.id.back);
         contactList = new ArrayList<>();
 
+        // Set up the adapter for the ListView
         adapter = new ContactAdapter(this, contactList);
         contactListView.setAdapter(adapter);
 
+        // Set up back button click listener to navigate to MainActivity
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,13 +64,14 @@ public class CatalogueActivity extends AppCompatActivity {
             }
         });
 
-        // Check for permissions
+        // Check for read contacts permission and load contacts if granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
         } else {
             loadContacts();
         }
 
+        // Set up add contact button click listener to show add contact dialog
         addContactButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +107,7 @@ public class CatalogueActivity extends AppCompatActivity {
         }
     }
 
+    // Load contacts from the phone's contact list
     @SuppressLint("Range")
     private void loadContacts() {
         ContentResolver contentResolver = getContentResolver();
@@ -142,6 +147,7 @@ public class CatalogueActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    // Show dialog to add a new contact
     private void showAddContactDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Πρόσθεσε επαφή");
@@ -164,6 +170,7 @@ public class CatalogueActivity extends AppCompatActivity {
         builder.show();
     }
 
+    // Add a new contact to the phone's contact list
     private void addContact(String name, String phone) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<>();
 
@@ -207,6 +214,7 @@ public class CatalogueActivity extends AppCompatActivity {
         }
     }
 
+    // Delete a contact from the list
     private void deleteContactFromList(long contactId) {
         for (Iterator<Contact> iterator = contactList.iterator(); iterator.hasNext();) {
             Contact contact = iterator.next();
@@ -218,7 +226,7 @@ public class CatalogueActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    // Add method to handle item clicks on the ListView
+    // Set up item click listener for the ListView
     private void setUpItemClickListener() {
         contactListView.setOnItemClickListener((parent, view, position, id) -> {
             Contact selectedContact = contactList.get(position);

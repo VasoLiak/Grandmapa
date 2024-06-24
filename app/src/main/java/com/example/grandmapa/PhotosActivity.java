@@ -23,6 +23,7 @@ public class PhotosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_photos);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -34,6 +35,7 @@ public class PhotosActivity extends AppCompatActivity {
         TextView datecurrent = findViewById(R.id.date);
         TextView dateprev = findViewById(R.id.dateprev);
 
+        //back button
         backImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,12 +44,16 @@ public class PhotosActivity extends AppCompatActivity {
             }
         });
 
+        // Get the current date in the format "dd MMMM yyyy"
         String currentDate = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(new Date());
+        // Set the current date to the TextView
         datecurrent.setText(currentDate);
 
+        // Get the calendar instance and set it to the previous day
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -1);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        // Get the formatted date for yesterday
         String yesterdayDate = dateFormat.format(calendar.getTime());
 
         // Set yesterday's date to the TextView
